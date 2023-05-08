@@ -1,0 +1,51 @@
+TITLE: media-progress
+#+#+PROPERTY: LOGGING nil
+
+[[.screenshot.png]]
+
+Package for Emacs to display media progress in =dired= and =dirvish=.
+For now only [[https://github.com/mpv-player/mpv][mpv]] player is supported.
+
+* Installation
+
+** system packages
+Install =mpv= media player. Add to your mpv config:
+#+begin_src conf
+  save-position-on-quit=yes
+  keep-open=yes
+#+end_src
+
+First line enables save position on quit (this package reads it later from mpv config directory)
+Second line disables closing on media's end. This line is necessary because mpv will not save position when player will be closed on video's end, and information about watched video will be lost.
+
+Optionally (but highly recommended) - install =mediainfo= to display more useful information.
+
+** dired minor mode
+Install package =media-progress-dired= from MELPA, then add to your config: src_emacs-lisp{(add-hook 'dired-mode-hook #'media-progress-dired-mode)}
+
+If you are =use-package= user:
+#+begin_src emacs-lisp
+    (use-package media-progress-dired
+      :hook (dired-mode . media-progress-dired-mode))
+#+end_src
+
+** dirvish segment
+Install package =media-progress-dirvish= from MELPA, then add to your config:
+#+begin_src emacs-lisp
+  (require 'media-progress-dirvish)
+  (eval-after-load 'dirvish mpvprogress-dirvish-setup)
+#+end_src
+
+If you are =use-package= user:
+#+begin_src emacs-lisp
+  (use-package media-progress-dirvish
+    :after dirvish
+    :config
+    (mpvprogress-dirvish-setup))
+#+end_src
+
+* Usage
+Open any media file with =mpv= (no matter if it's launched from Emacs of any other file manager), watch it to some point, press "q" if you added lines, described in installation section, into your config, and "Shift-q" (save and exit shortcut) otherwise. Now progress percent will be displayed in your dirvish/dired buffer!
+
+* Acknowledgments
+- I reused [[https://github.com/amno1/dired-git-log]] code for my dired minor mode, thank you for your work!
