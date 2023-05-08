@@ -1,7 +1,6 @@
-TITLE: media-progress
-#+#+PROPERTY: LOGGING nil
-
-[[.screenshot.png]]
+#+TITLE: media-progress
+#+PROPERTY: LOGGING nil
+[[./screenshot.png]]
 
 Package for Emacs to display media progress in =dired= and =dirvish=.
 For now only [[https://github.com/mpv-player/mpv][mpv]] player is supported.
