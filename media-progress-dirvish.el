@@ -6,7 +6,7 @@
 ;; Keywords: files, convenience
 ;; Homepage: https://github.com/jumper047/media-progress
 
-;; Package-Requires: ((dirvish "2.0.0"))
+;; Package-Requires: ((emacs "28.1") (dirvish "2.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
 

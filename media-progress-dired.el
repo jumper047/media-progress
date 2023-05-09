@@ -1,12 +1,13 @@
-;;; media-progress.el --- Display position where media player stopped in dired buffer -*- lexical-binding:t -*-
+;;; media-progress-dired.el --- Display position where media player stopped in dired buffer -*- lexical-binding:t -*-
 ;; Copyright (C) 2018-2023  Free Software Foundation, Inc.
 
+;; Author: Dmitriy Pshonko <http://github.com/jumper047>
 ;; Author: Arthur Miller <arthur.miller@live.com>
 ;; Author: Clemens Radermacher <clemera@posteo.net>
-;; Author: Dmitriy Pshonko <http://github.com/jumper047>
 ;; Version: 0.1.0
 ;; Keywords: files, convenience
 ;; Homepage: https://github.com/jumper047/media-progress
+;; Package-Requires: ((emacs "28.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
