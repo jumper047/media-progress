@@ -54,6 +54,14 @@ behavior of the plugin when both types met simultaneously."
   :type '(bool)
   :group 'media-progress)
 
+;; Shamelessly borrowed from dirvish - see dirvish-video-exts constant
+(defcustom media-progress-extensions '("f4v" "rmvb" "wvx" "wmx" "wmv" "wm" "asx" "mk3d" "mkv" "fxm" "flv" "axv" "webm" "viv" "yt" "s1q" "smo" "smov" "ssw" "sswf" "s14" "s11" "smpg" "smk" "bk2" "bik" "nim" "pyv" "m4u" "mxu" "fvt" "dvb" "uvvv" "uvv" "uvvs" "uvs" "uvvp" "uvp" "uvvu" "uvu" "uvvm" "uvm" "uvvh" "uvh" "ogv" "m2v" "m1v" "m4v" "mpg4" "mp4" "mjp2" "mj2" "m4s" "3gpp2" "3g2" "3gpp" "3gp" "avi" "mov" "movie" "mpe" "mpeg" "mpegv" "mpg" "mpv" "qt" "vbs")
+  "List of the extensions which should be checked for progress.
+If you want to check all files - set variable to nil
+\(not recommended for performance reasons\)"
+  :type '(list)
+  :group 'media-progress)
+
 (defcustom media-progress-completed-threshold 0.95
   "Percent of the progress treated as \"completed\".
 \(value should be between 0 and 0.99\)"
@@ -81,6 +89,14 @@ behavior of the plugin when both types met simultaneously."
 
 (defvar media-progress-mediainfo-args "--Inform=\"General;%Duration%\""
   "Arguments to extract duration from media file with \"mediainfo\".")
+
+(defun media-progress--media-p (file)
+  "Check if FILE should be checked for progress."
+  (if (and (not (file-directory-p file)) media-progress-extensions)
+      (let ((ext (file-name-extension file)))
+        (member ext media-progress-extensions))
+    ;; Check all files if extensions are empty
+    't))
 
 (defun media-progress--get-watch-later-file (media-file)
   "Find path to the \"watch_later\" mpv file for for MEDIA-FILE."
@@ -126,18 +142,21 @@ behavior of the plugin when both types met simultaneously."
             ,(shell-quote-argument media-file)) " "))) 1000.0)))
 
 (defun media-progress-info-string (media-file)
-  "Get progress string for MEDIA-FILE if possible."
-  (when-let* ((wl-file (media-progress--get-watch-later-file media-file)))
+  "Get progress string for MEDIA-FILE if possible.
+Return an empty string if no info found."
+  (or (when-let* ((media-p (media-progress--media-p media-file))
+                  (wl-file (media-progress--get-watch-later-file media-file)))
 
-    ;; current-pos duration completed format-str subst)
-    (let  ((current-pos (media-progress--extract-pos wl-file))
-           (duration (media-progress--get-duration media-file)))
-      (if duration
-          (if (>= (/ (float current-pos) duration) media-progress-completed-threshold) ;completed if t
-              media-progress-completed-message
-            (format media-progress-format (round (* 100 (/ (float current-pos) duration)))))
-        (format media-progress-fallback-format
-                (format-seconds media-progress-watched-time-format current-pos))))))
+        ;; current-pos duration completed format-str subst)
+        (let  ((current-pos (media-progress--extract-pos wl-file))
+               (duration (media-progress--get-duration media-file)))
+          (if duration
+              (if (>= (/ (float current-pos) duration) media-progress-completed-threshold) ;completed if t
+                  media-progress-completed-message
+                (format media-progress-format (round (* 100 (/ (float current-pos) duration)))))
+            (format media-progress-fallback-format
+                    (format-seconds media-progress-watched-time-format current-pos)))))
+      ""))
 
 (provide 'media-progress)
 ;;; media-progress.el ends here
