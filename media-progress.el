@@ -129,7 +129,7 @@ If you want to check all files - set variable to nil
 
 (defun media-progress--parse-wl-line (line)
   "Parse LINE of the \"watch_later\" file as \(key . value\)."
-  (let* ((key-val (string-split line "="))
+  (let* ((key-val (split-string line "="))
          (key (intern (car key-val)))
          (val (cadr key-val)))
     (cons key val)))
@@ -139,7 +139,7 @@ If you want to check all files - set variable to nil
   (let* ((wl-file-content (with-temp-buffer
                             (insert-file-contents wl-file)
                             (buffer-string)))
-         (wl-lines (string-split wl-file-content "\n"))
+         (wl-lines (split-string wl-file-content "\n"))
          (wl-alist (mapcar #'media-progress--parse-wl-line wl-lines)))
     (string-to-number (alist-get 'start wl-alist))))
 
