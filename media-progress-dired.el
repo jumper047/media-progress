@@ -106,11 +106,11 @@ info."
         (dired-next-line 1)))))
 
 (defun media-progress-dired--after-readin ()
-  "media-progress-dired hook called after a Dired buffer is modified."
+  "Hook called after a Dired buffer is modified."
   (media-progress-dired--insert-info))
 
 (defun media-progress-dired--before-readin ()
-  "media-progress-dired hook called before a Dired buffer is modified."
+  "Hook called before a Dired buffer is modified."
   (when (bound-and-true-p media-progress-dired-mode)
     (media-progress-dired--remove-info)))
 
@@ -137,12 +137,16 @@ LIMIT as required by font-lock hook."
       (dired-next-line 1))))
 
 (defun media-progress-dired--after-mode ()
+  "Enable automatic details hiding.
+Intended to use in the `after-change-major-mode-hook'"
   (when media-progress-dired-auto-hide-details-p
     (unless (bound-and-true-p dired-hide-details-mode)
       (setq media-progress-dired--restore-no-details t)
       (dired-hide-details-mode))))
 
 (defun media-progress-dired--on-first-change ()
+  "Fontify inserted media progress info in whole Dired buffer.
+Intended to use in `first-change-hook'"
   (media-progress-dired--fontify-info (point-max)))
 
 (defun media-progress-dired--cleanup ()
