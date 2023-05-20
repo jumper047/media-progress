@@ -9,7 +9,7 @@
 ;; Version: 0.1.0
 ;; Keywords: files, convenience
 ;; Homepage: https://github.com/jumper047/media-progress
-;; Package-Requires: ((emacs "28.1"))
+;; Package-Requires: ((emacs "28.1") (media-progress "0.1.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
