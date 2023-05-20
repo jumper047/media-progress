@@ -1,5 +1,7 @@
 ;;; media-progress-dired.el --- Display position where media player stopped in dired buffer -*- lexical-binding:t -*-
-;; Copyright (C) 2018-2023  Free Software Foundation, Inc.
+
+;; Copyright (C) 2023 Dmitriy Pshonko
+;; Copyright (C) 2018-2019  Free Software Foundation, Inc.
 
 ;; Author: Dmitriy Pshonko <http://github.com/jumper047>
 ;; Author: Arthur Miller <arthur.miller@live.com>
