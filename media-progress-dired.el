@@ -129,7 +129,7 @@ LIMIT as required by font-lock hook."
     (while (< (point) limit)
       (when (dired-file-name-at-point)
         (dired-move-to-end-of-filename)
-        (when (< (point) (line-end-position))
+        (when (not (eolp))
           (add-text-properties
            (1+ (point)) (line-end-position)
            (list 'font-lock-fontified t
