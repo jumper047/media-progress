@@ -82,7 +82,7 @@ info."
           (when (dired-file-name-at-point)
             (dired-move-to-end-of-filename t)
             (setq mpv-info (media-progress-info-string file))
-            (if mpv-info (insert (concat (make-string (1+ (- longest (length file))) ?\s) mpv-info)))))
+            (if mpv-info (insert (make-string (1+ (- longest (length file))) ?\s) mpv-info))))
         (media-progress-dired--fontify-info (point-max))))))
 
 
