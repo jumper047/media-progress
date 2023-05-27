@@ -45,6 +45,8 @@
 
 ;;; Code:
 
+(require 'subr-x)
+
 (defgroup media-progress nil
   "Display position where mpv player stopped."
   :group 'dired
