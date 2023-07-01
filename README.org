@@ -32,7 +32,7 @@ If you are =use-package= user:
 Install package =media-progress-dirvish= from MELPA, then add to your config:
 #+begin_src emacs-lisp
   (require 'media-progress-dirvish)
-  (eval-after-load 'dirvish mpvprogress-dirvish-setup)
+  (eval-after-load 'dirvish media-progress-dirvish-setup)
 #+end_src
 
 If you are =use-package= user:
@@ -40,7 +40,7 @@ If you are =use-package= user:
   (use-package media-progress-dirvish
     :after dirvish
     :config
-    (mpvprogress-dirvish-setup))
+    (media-progress-dirvish-setup))
 #+end_src
 
 * Usage
