@@ -85,7 +85,7 @@ If you want to check all files - set variable to nil
 (defvar media-progress-mpv-watch-later-dir-name "watch_later"
   "Name of the directory inside mpv cfg dir containing watch_later files.")
 
-(defvar media-progress-format "Progress: %s %%"
+(defvar media-progress-format "Progress: %s%%"
   "Message with current progress in percents.")
 
 (defvar media-progress-completed-message "Completed"
