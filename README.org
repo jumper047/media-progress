@@ -20,6 +20,7 @@ Second line disables closing on media's end. This line is necessary because mpv 
 Optionally (but highly recommended) - install =mediainfo= to display more useful information.
 
 ** dired minor mode
+[[https://melpa.org/#/media-progress-dired][file:https://melpa.org/packages/media-progress-dired-badge.svg]]
 Install package =media-progress-dired= from MELPA, then add to your config: src_emacs-lisp{(add-hook 'dired-mode-hook #'media-progress-dired-mode)}
 
 If you are =use-package= user:
@@ -29,6 +30,7 @@ If you are =use-package= user:
 #+end_src
 
 ** dirvish segment
+[[https://melpa.org/#/media-progress-dirvish][file:https://melpa.org/packages/media-progress-dirvish-badge.svg]]
 Install package =media-progress-dirvish= from MELPA, then add to your config:
 #+begin_src emacs-lisp
   (require 'media-progress-dirvish)
