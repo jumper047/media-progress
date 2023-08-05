@@ -52,7 +52,10 @@
   :group 'dired
   :prefix "media-progress-")
 
-(defcustom media-progress-mpv-cfg-dir "~/.config/mpv"
+(defcustom media-progress-mpv-cfg-dir (cond ((eq system-type "windows-nt")
+                                             "~/mpv")
+                                            ('t
+                                             "~/.config/mpv"))
   "Location of the mpv config directory."
   :type '(directory)
   :group 'media-progress)

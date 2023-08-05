@@ -14,6 +14,8 @@ Install =mpv= media player. Add to your mpv config:
   keep-open=yes
 #+end_src
 
+You can find your mpv config in =~/.config/mpv/mpv.conf= on Linux and in =~/mpv/mpv.conf= on Windows (~/ resolves to AppData/Roaming).
+
 First line enables save position on quit (this package reads it later from mpv config directory)
 Second line disables closing on media's end. This line is necessary because mpv will not save position when player will be closed on video's end, and information about watched video will be lost.
 
