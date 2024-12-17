@@ -61,12 +61,6 @@
   :type '(float)
   :group 'media-progress)
 
-(defcustom media-progress-info-fetchers
-  '(media-progress-mpv-get-info)
-  "Functions to get progress info for certain file."
-  :type '(list)
-  :group 'media-progress)
-
 (defvar media-progress-format "Progress: %s%%"
   "Message with current progress in percents.")
 
