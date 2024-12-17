@@ -56,7 +56,7 @@
   :prefix "media-progress-")
 
 (defcustom media-progress-completed-threshold 0.95
-  "Percent of the progress treated as \"completed\".
+  "Progress treated as \"completed\".
 \(value should be between 0 and 0.99\)"
   :type '(float)
   :group 'media-progress)
