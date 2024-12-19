@@ -74,12 +74,6 @@ If you want to check all files - set variable to nil
   :type '(list)
   :group 'media-progress-mpv)
 
-(defcustom media-progress-completed-threshold 0.95
-  "Percent of the progress treated as \"completed\".
-\(value should be between 0 and 0.99\)"
-  :type '(float)
-  :group 'media-progress)
-
 (defvar media-progress-mpv-watch-later-dir-name "watch_later"
   "Name of the directory inside mpv cfg dir containing watch_later files.")
 
@@ -143,7 +137,7 @@ If you want to check all files - set variable to nil
 
 (defun media-progress-mpv-info (media-file)
   "Get progress info for MEDIA-FILE if possible.
-Return (current-pos-str duration-str progress-percentage)
+Return (plugin-name current-pos-str duration-str progress-percentage)
 or nil if no info found."
   (when-let* ((media-p (media-progress-mpv--media-p media-file))
               (wl-file (media-progress-mpv--get-watch-later-file media-file)))
@@ -156,7 +150,7 @@ or nil if no info found."
         (setq
          percentage (/ (float current-pos) duration)
          duration-str (format-seconds media-progress-mpv-watched-time-format duration)))
-      (list current-pos-str duration-str percentage))))
+      (list 'mpv current-pos-str duration-str percentage))))
 
 (provide 'media-progress-mpv)
 ;;; media-progress-mpv.el ends here

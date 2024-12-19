@@ -49,22 +49,22 @@
 
 (require 'subr-x)
 (require 'media-progress-mpv)
+(require 'media-progress-pdf-tools)
 
 (defgroup media-progress nil
   "Display position where mpv player stopped."
   :group 'dired
   :prefix "media-progress-")
 
-(defcustom media-progress-completed-threshold 0.95
-  "Percent of the progress treated as \"completed\".
-\(value should be between 0 and 0.99\)"
-  :type '(float)
-  :group 'media-progress)
-
-(defcustom media-progress-info-fetchers
-  '(media-progress-mpv-get-info)
-  "Functions to get progress info for certain file."
-  :type '(list)
+(defcustom media-progress-display-function 'media-progress-make-string
+  "Function used to display progress.
+Function should receive 4 parameters:
+- plugin name, hinting on data source
+- current position as string
+- media length/number of pages/etc, optional
+- media progress, number in range of 0 to 0.99, optional.
+Function should return string to display in file manager"
+  :type 'function
   :group 'media-progress)
 
 (defvar media-progress-format "Progress: %s%%"
@@ -76,21 +76,29 @@
 (defvar media-progress-fallback-format "Stopped at: %s"
   "Message with absolute position in case mediainfo is not installed.")
 
-(defun media-progress--make-string (pos len progress)
-  (unless (and len progress)
-    (format media-progress-fallback-format pos))
-  (if (>= progress media-progress-completed-threshold)
-      media-progress-completed-message
-    (format media-progress-format (round (* 100 progress)))))
+(defun media-progress-make-string (plugin pos len progress)
+  (if (not (and len progress))
+      (format media-progress-fallback-format pos)
+    (if (>= progress media-progress-completed-threshold)
+        media-progress-completed-message
+      (format media-progress-format (round (* 100 progress))))))
+
+(defcustom media-progress-completed-threshold 0.95
+  "Progress treated as \"completed\".
+\(value should be between 0 and 0.99\)"
+  :type '(float)
+  :group 'media-progress)
 
 (defun media-progress-info-string (media-file)
   "Get progress string for MEDIA-FILE if possible.
 Return an empty string if no info found."
-  (if-let* ((media-info (cond ((media-progress-mpv-info media-file))))
-            (media-pos (car media-info))
-            (media-length (cadr media-info))
-            (media-progress (caddr media-info)))
-      (media-progress--make-string media-pos media-length media-progress)
+  (if-let* ((media-info (cond ((media-progress-mpv-info media-file))
+                              ((media-progress-pdf-tools-info media-file))))
+            (media-plugin (car media-info))
+            (media-pos (cadr media-info))
+            (media-length (caddr media-info))
+            (media-progress (cadddr media-info)))
+      (funcall media-progress-display-function media-plugin media-pos media-length media-progress)
     ""))
 
 (provide 'media-progress)
