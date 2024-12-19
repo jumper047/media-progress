@@ -49,6 +49,7 @@
 
 (require 'subr-x)
 (require 'media-progress-mpv)
+(require 'media-progress-pdf-tools)
 
 (defgroup media-progress nil
   "Display position where mpv player stopped."
@@ -92,6 +93,7 @@ Function should return string to display in file manager"
   "Get progress string for MEDIA-FILE if possible.
 Return an empty string if no info found."
   (if-let* ((media-info (cond ((media-progress-mpv-info media-file))
+                              ((media-progress-pdf-tools-info media-file))))
             (media-plugin (car media-info))
             (media-pos (cadr media-info))
             (media-length (caddr media-info))
