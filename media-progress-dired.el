@@ -133,7 +133,7 @@ LIMIT as required by font-lock hook."
           (add-text-properties
            (1+ (point)) (line-end-position)
            (list 'font-lock-fontified t
-                 'face 'media-progress-dired-commit-message-face))))
+                 'face 'media-progress-dired-mpv-info-face))))
       (dired-next-line 1))))
 
 (defun media-progress-dired--after-mode ()
