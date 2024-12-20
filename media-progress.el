@@ -67,7 +67,27 @@ Function should return string to display in file manager"
   :type 'function
   :group 'media-progress)
 
-(defvar media-progress-format "Progress: %s%%"
+(defcustom media-progress-completed-threshold nil
+  "Progress treated as \"completed\".
+\(value should be between 0 and 0.99\)
+Attention! This variable is obsolete and will be
+dropped in foreseeing future! Please delete it from your
+configuration files and use `media-progress-completed-percentage'
+instead!"
+  :type '(integer)
+  :group 'media-progress)
+
+(defcustom media-progress-completed-percentage 95
+  "Progress treated as \"completed\".
+\(value should be between 0 and 99\)"
+  :type '(integer)
+  :group 'media-progress)
+
+(if media-progress-completed-threshold
+    (setq media-progress-completed-percentage
+          (round (* 100 media-progress-completed-threshold))))
+
+(defvar media-progress-format "progress: %s%%"
   "Message with current progress in percents.")
 
 (defvar media-progress-completed-message "Completed"
@@ -81,13 +101,7 @@ Function should return string to display in file manager"
       (format media-progress-fallback-format pos)
     (if (>= progress media-progress-completed-threshold)
         media-progress-completed-message
-      (format media-progress-format (round (* 100 progress))))))
 
-(defcustom media-progress-completed-threshold 0.95
-  "Progress treated as \"completed\".
-\(value should be between 0 and 0.99\)"
-  :type '(float)
-  :group 'media-progress)
 
 (defun media-progress-info-string (media-file)
   "Get progress string for MEDIA-FILE if possible.

@@ -81,14 +81,14 @@ or nil if no info found."
               (current-page (media-progress-pdf-tools-get-current-page media-file)))
 
     (let ((number-of-pages (media-progress-pdf-tools-get-number-of-pages media-file))
-          progress)
+          percentage)
       (when number-of-pages
-        (setq progress (/ (float current-page) number-of-pages)))
+        (setq percentage (round (* 100 (/ (float current-page) number-of-pages)))))
       (list
        'pdf-tools
        (number-to-string current-page)
        (and number-of-pages (number-to-string number-of-pages))
-       progress))))
+       percentage))))
 
 (provide 'media-progress-pdf-tools)
 ;;; media-progress-pdf-tools.el ends here
