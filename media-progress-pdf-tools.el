@@ -36,6 +36,8 @@
 (require 'media-progress-cache)
 
 (declare-function pdf-info-number-of-pages "ext:pdf-info")
+(defvar save-place-mode)
+(defvar save-place-alist)
 
 (defgroup media-progress-pdf-tools nil
   "Extract position information from mpv player."
