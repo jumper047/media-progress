@@ -56,27 +56,13 @@
   "Face for media progress overlays."
   :group 'media-progress-dirvish)
 
-(defvar media-progress-dirvish-curr-dir nil)
-(defvar media-progress-dirvish-cache nil)
-
-(defun media-progress-dirvish-info-string (file)
-  "Get progress string for FILE, use cache if possible."
-  (unless (equal (file-name-directory file) media-progress-dirvish-curr-dir)
-    (clrhash media-progress-dirvish-cache)
-    (setq media-progress-dirvish-curr-dir (file-name-directory file)))
-  (let ((progress-string (gethash file media-progress-dirvish-cache)))
-    (unless progress-string
-      (setq progress-string (media-progress-info-string file))
-      (puthash file progress-string media-progress-dirvish-cache))
-    progress-string))
-
 (dirvish-define-attribute media-progress
   "Append player progress info to the media file."
   :index 1
   :when (and (not (eq (dirvish-prop :vc-backend) 'Git)) ; don't clash with VC
              (not (dirvish-prop :remote))
              (> win-width 65))
-  (let* ((progress-str (media-progress-dirvish-info-string f-name))
+  (let* ((progress-str (media-progress-info-string f-name))
          (face (or hl-face 'media-progress-dirvish-face))
          (str (concat "  " progress-str " ")))
     (add-face-text-property 0 (length str) face t str)
@@ -84,7 +70,6 @@
 
 (defun media-progress-dirvish-setup ()
   "Set up media-progress info segment for DIRVISH."
-  (setq media-progress-dirvish-cache (make-hash-table :test 'equal))
   (push '(media-progress-dirvish media-progress) dirvish-libraries)
   (push 'media-progress dirvish-attributes))
 
