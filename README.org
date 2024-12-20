@@ -5,7 +5,7 @@
 [[./screenshot.png]]
 
 Package for Emacs to display position in various media files in =dired= and =dirvish= file managers.
-For now [[https://github.com/mpv-player/mpv][mpv]] player is supported.
+For now [[https://github.com/mpv-player/mpv][mpv]] player and Emacs package pdf-tools are supported.
 
 * Installation
 
