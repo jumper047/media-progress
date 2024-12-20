@@ -48,6 +48,11 @@
   :group 'media-progress
   :prefix "media-progress-mpv-")
 
+(defcustom media-progress-mpv-enabled 't
+  "Enable displaying info about media files, opened by mpv."
+  :type '(boolean)
+  :group 'media-progress-mpv)
+
 (defcustom media-progress-mpv-cfg-dir (cond ((eq system-type "windows-nt")
                                              "~/mpv")
                                             ('t
@@ -169,7 +174,7 @@ information about position in file or overall progress is available."
            duration-str)
       (when duration
         (setq
-         percentage (/ (float current-pos) duration)
+         percentage (round (* 100 (/ (float current-pos) duration)))
          duration-str (format-seconds media-progress-mpv-watched-time-format duration)))
       (list 'mpv current-pos-str duration-str percentage))))
 

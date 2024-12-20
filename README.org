@@ -2,7 +2,7 @@
 #+PROPERTY: LOGGING nil
 [[https://melpa.org/#/media-progress-dired][file:https://melpa.org/packages/media-progress-dired-badge.svg]]
 
-[[./screenshot.png]]
+[[./screenshots/icons-minimal.png]]
 
 Package for Emacs to display position in various media files in =dired= and =dirvish= file managers.
 For now [[https://github.com/mpv-player/mpv][mpv]] player and Emacs package pdf-tools are supported.
@@ -33,8 +33,12 @@ Install package =media-progress-dired= from MELPA, then add to your config: src_
 
 If you are =use-package= user:
 #+begin_src emacs-lisp
-    (use-package media-progress-dired
-      :hook (dired-mode . media-progress-dired-mode))
+  (use-package media-progress-dired
+    :hook (dired-mode . media-progress-dired-mode)
+    :config
+    (require 'pdf-info)
+    (require 'nerd-icons)
+    (setq media-progress-display-function 'media-progress-display-icons-minimal))
 #+end_src
 
 ** Dirvish Segment
@@ -42,7 +46,10 @@ If you are =use-package= user:
 
 Install package =media-progress-dirvish= from MELPA, then add to your config:
 #+begin_src emacs-lisp
+  (require 'pdf-info)
+  (require 'nerd-icons)
   (require 'media-progress-dirvish)
+  (setq media-progress-display-function 'media-progress-display-icons-minimal)
   (eval-after-load 'dirvish media-progress-dirvish-setup)
 #+end_src
 
@@ -51,11 +58,27 @@ If you are =use-package= user:
   (use-package media-progress-dirvish
     :after dirvish
     :config
+    (require 'pdf-info)
+    (require 'nerd-icons)
+    (setq media-progress-display-function 'media-progress-display-icons-minimal)
     (media-progress-dirvish-setup))
 #+end_src
 
 * Usage
 Open any media file with =mpv= (no matter if it's launched from Emacs of any other file manager), watch it to some point, press "q" if you added lines, described in installation section, into your config, and "Shift-q" (save and exit shortcut) otherwise. Now progress percent will be displayed in your dirvish/dired buffer!
+
+* Customization
+To change what progress value is enough to mark file as completed, set variable =media-progress-completed-percentage=
+To change information appearance change value of the =media-progress-display-function= variable.
+For now there are three predefined options:
+- =media-progress-display-plain= - plain text.
+[[./screenshots/plain.png]]  
+- =media-progress-display-icons= - with =nerd-icons=. =nerd-icons= should be loaded!
+[[./screenshots/icons.png]]
+- =media-progress-display-icons-minimal= - minimal version of the previous, just icons without percentage
+[[./screenshots/icons-minimal.png]]
+
+If this is not enough, you can write your own function!
 
 * Acknowledgments
 - I reused [[https://github.com/amno1/dired-git-log]] code for my dired minor mode, thank you for your work!

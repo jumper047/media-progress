@@ -51,12 +51,14 @@
 (require 'media-progress-mpv)
 (require 'media-progress-pdf-tools)
 
+(declare-function nerd-icons-mdicon "ext:nerd-icons")
+
 (defgroup media-progress nil
   "Display position where mpv player stopped."
   :group 'dired
   :prefix "media-progress-")
 
-(defcustom media-progress-display-function 'media-progress-make-string
+(defcustom media-progress-display-function 'media-progress-display-plain
   "Function used to display progress.
 Function should receive 4 parameters:
 - plugin name, hinting on data source
@@ -67,33 +69,64 @@ Function should return string to display in file manager"
   :type 'function
   :group 'media-progress)
 
-(defvar media-progress-format "Progress: %s%%"
+(defcustom media-progress-completed-threshold nil
+  "Progress treated as \"completed\".
+\(value should be between 0 and 0.99\)
+Attention! This variable is obsolete and will be
+dropped in foreseeing future! Please delete it from your
+configuration files and use `media-progress-completed-percentage'
+instead!"
+  :type '(integer)
+  :group 'media-progress)
+
+(defcustom media-progress-completed-percentage 95
+  "Progress treated as \"completed\".
+\(value should be between 0 and 99\)"
+  :type '(integer)
+  :group 'media-progress)
+
+(if media-progress-completed-threshold
+    (setq media-progress-completed-percentage
+          (round (* 100 media-progress-completed-threshold))))
+
+(defvar media-progress-format "progress: %s%%"
   "Message with current progress in percents.")
 
-(defvar media-progress-completed-message "Completed"
+(defvar media-progress-completed-message "completed"
   "Message to indicate file was watched till the end.")
 
-(defvar media-progress-fallback-format "Stopped at: %s"
+(defvar media-progress-fallback-format "stopped at: %s"
   "Message with absolute position in case mediainfo is not installed.")
 
-(defun media-progress-make-string (plugin pos len progress)
+(defun media-progress-display-plain (plugin pos len progress)
   (if (not (and len progress))
       (format media-progress-fallback-format pos)
-    (if (>= progress media-progress-completed-threshold)
+    (if (>= progress media-progress-completed-percentage)
         media-progress-completed-message
-      (format media-progress-format (round (* 100 progress))))))
+      (format media-progress-format progress))))
 
-(defcustom media-progress-completed-threshold 0.95
-  "Progress treated as \"completed\".
-\(value should be between 0 and 0.99\)"
-  :type '(float)
-  :group 'media-progress)
+(defun media-progress-display-icons (plugin pos len progress)
+  (if (not (and len progress))
+      (cond ((eq plugin 'pdf-tools) (format " %s p. %s " (nerd-icons-mdicon "nf-md-eye") pos))
+            ((eq plugin 'mpv) (format " %s %s" (nerd-icons-mdicon "nf-md-eye") pos)))
+    (if (> progress media-progress-completed-percentage) (format " %s " (nerd-icons-mdicon "nf-md-check"))
+      (cond ((eq plugin 'pdf-tools) (format " %s p. %s/%s " (nerd-icons-mdicon "nf-md-eye") pos len))
+            ((eq plugin 'mpv) (format " %s %s%% " (nerd-icons-mdicon "nf-md-eye") progress))))))
+
+(defun media-progress-display-icons-minimal (plugin pos len progress)
+  (if (and progress (> progress media-progress-completed-percentage))
+      (format " %s " (nerd-icons-mdicon "nf-md-check"))
+    (format " %s " (nerd-icons-mdicon "nf-md-eye"))))
 
 (defun media-progress-info-string (media-file)
   "Get progress string for MEDIA-FILE if possible.
 Return an empty string if no info found."
-  (if-let* ((media-info (cond ((media-progress-mpv-info media-file))
-                              ((media-progress-pdf-tools-info media-file))))
+  (if-let* ((media-info (cond ((and
+                                media-progress-mpv-enabled
+                                (media-progress-mpv-info media-file)))
+                              ((and
+                                media-progress-pdf-tools-enabled
+                                (media-progress-pdf-tools-info media-file)))))
             (media-plugin (car media-info))
             (media-pos (cadr media-info))
             (media-length (caddr media-info))
