@@ -51,12 +51,14 @@
 (require 'media-progress-mpv)
 (require 'media-progress-pdf-tools)
 
+(declare-function nerd-icons-mdicon "ext:nerd-icons")
+
 (defgroup media-progress nil
   "Display position where mpv player stopped."
   :group 'dired
   :prefix "media-progress-")
 
-(defcustom media-progress-display-function 'media-progress-make-string
+(defcustom media-progress-display-function 'media-progress-display-plain
   "Function used to display progress.
 Function should receive 4 parameters:
 - plugin name, hinting on data source
@@ -90,18 +92,31 @@ instead!"
 (defvar media-progress-format "progress: %s%%"
   "Message with current progress in percents.")
 
-(defvar media-progress-completed-message "Completed"
+(defvar media-progress-completed-message "completed"
   "Message to indicate file was watched till the end.")
 
-(defvar media-progress-fallback-format "Stopped at: %s"
+(defvar media-progress-fallback-format "stopped at: %s"
   "Message with absolute position in case mediainfo is not installed.")
 
-(defun media-progress-make-string (plugin pos len progress)
+(defun media-progress-display-plain (plugin pos len progress)
   (if (not (and len progress))
       (format media-progress-fallback-format pos)
-    (if (>= progress media-progress-completed-threshold)
+    (if (>= progress media-progress-completed-percentage)
         media-progress-completed-message
+      (format media-progress-format progress))))
 
+(defun media-progress-display-icons (plugin pos len progress)
+  (if (not (and len progress))
+      (cond ((eq plugin 'pdf-tools) (format " %s p. %s " (nerd-icons-mdicon "nf-md-eye") pos))
+            ((eq plugin 'mpv) (format " %s %s" (nerd-icons-mdicon "nf-md-eye") pos)))
+    (if (> progress media-progress-completed-percentage) (format " %s " (nerd-icons-mdicon "nf-md-check"))
+      (cond ((eq plugin 'pdf-tools) (format " %s p. %s/%s " (nerd-icons-mdicon "nf-md-eye") pos len))
+            ((eq plugin 'mpv) (format " %s %s%% " (nerd-icons-mdicon "nf-md-eye") progress))))))
+
+(defun media-progress-display-icons-minimal (plugin pos len progress)
+  (if (and progress (> progress media-progress-completed-percentage))
+      (format " %s " (nerd-icons-mdicon "nf-md-check"))
+    (format " %s " (nerd-icons-mdicon "nf-md-eye"))))
 
 (defun media-progress-info-string (media-file)
   "Get progress string for MEDIA-FILE if possible.
