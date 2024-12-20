@@ -44,6 +44,11 @@
   :group 'media-progress
   :prefix "media-progress-pdf-tools-")
 
+(defcustom media-progress-pdf-tools-enabled 't
+  "Enable displaying info about pdf-files, opened by mpv."
+  :type '(boolean)
+  :group 'media-progress-pdf-tools)
+
 (defcustom media-progress-pdf-tools-extensions '("pdf")
   "List of the extensions which should be checked for progress.
 If you want to check all files - set variable to nil

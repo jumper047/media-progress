@@ -92,8 +92,12 @@ Function should return string to display in file manager"
 (defun media-progress-info-string (media-file)
   "Get progress string for MEDIA-FILE if possible.
 Return an empty string if no info found."
-  (if-let* ((media-info (cond ((media-progress-mpv-info media-file))
-                              ((media-progress-pdf-tools-info media-file))))
+  (if-let* ((media-info (cond ((and
+                                media-progress-mpv-enabled
+                                (media-progress-mpv-info media-file)))
+                              ((and
+                                media-progress-pdf-tools-enabled
+                                (media-progress-pdf-tools-info media-file)))))
             (media-plugin (car media-info))
             (media-pos (cadr media-info))
             (media-length (caddr media-info))

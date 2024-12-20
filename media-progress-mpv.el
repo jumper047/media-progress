@@ -48,6 +48,11 @@
   :group 'media-progress
   :prefix "media-progress-mpv-")
 
+(defcustom media-progress-mpv-enabled 't
+  "Enable displaying info about media files, opened by mpv."
+  :type '(boolean)
+  :group 'media-progress-mpv)
+
 (defcustom media-progress-mpv-cfg-dir (cond ((eq system-type "windows-nt")
                                              "~/mpv")
                                             ('t
