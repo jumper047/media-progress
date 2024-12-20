@@ -1,13 +1,15 @@
 #+TITLE: media-progress
 #+PROPERTY: LOGGING nil
+[[https://melpa.org/#/media-progress-dired][file:https://melpa.org/packages/media-progress-dired-badge.svg]]
+
 [[./screenshot.png]]
 
-Package for Emacs to display media progress in =dired= and =dirvish=.
-For now only [[https://github.com/mpv-player/mpv][mpv]] player is supported.
+Package for Emacs to display position in various media files in =dired= and =dirvish= file managers.
+For now [[https://github.com/mpv-player/mpv][mpv]] player is supported.
 
 * Installation
 
-** system packages
+** System Packages
 Install =mpv= media player. Add to your mpv config:
 #+begin_src conf
   save-position-on-quit=yes
@@ -21,7 +23,10 @@ Second line disables closing on media's end. This line is necessary because mpv 
 
 Optionally (but highly recommended) - install =mediainfo= to display more useful information.
 
-** dired minor mode
+** Emacs Packages
+To display position saved by pdf-tools install and set up https://github.com/nicolaisingh/saveplace-pdf-view.
+
+** Dired Minor Mode
 [[https://melpa.org/#/media-progress-dired][file:https://melpa.org/packages/media-progress-dired-badge.svg]]
 
 Install package =media-progress-dired= from MELPA, then add to your config: src_emacs-lisp{(add-hook 'dired-mode-hook #'media-progress-dired-mode)}
@@ -32,7 +37,7 @@ If you are =use-package= user:
       :hook (dired-mode . media-progress-dired-mode))
 #+end_src
 
-** dirvish segment
+** Dirvish Segment
 [[https://melpa.org/#/media-progress-dirvish][file:https://melpa.org/packages/media-progress-dirvish-badge.svg]]
 
 Install package =media-progress-dirvish= from MELPA, then add to your config:
