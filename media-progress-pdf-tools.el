@@ -33,6 +33,7 @@
 ;;; -*- lexical-binding:t -*-
 
 (require 'subr-x)
+(require 'media-progress-cache)
 
 (declare-function pdf-info-number-of-pages "ext:pdf-info")
 
@@ -62,6 +63,7 @@ If you want to check all files - set variable to nil
 (defun media-progress-pdf-tools-get-number-of-pages (file)
   (if (fboundp 'pdf-info-number-of-pages)
       (pdf-info-number-of-pages file)))
+(media-progress-cache-wrap-function #'media-progress-pdf-tools-get-number-of-pages)
 
 (defun media-progress-pdf-tools-info (media-file)
   "Get progress info for MEDIA-FILE if possible.

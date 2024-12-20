@@ -41,6 +41,7 @@
 ;;; -*- lexical-binding:t -*-
 
 (require 'subr-x)
+(require 'media-progress-cache)
 
 (defgroup media-progress-mpv nil
   "Extract position information from mpv player."
@@ -125,6 +126,21 @@ If you want to check all files - set variable to nil
          (wl-alist (mapcar #'media-progress-mpv--parse-wl-line wl-lines)))
     (string-to-number (alist-get 'start wl-alist))))
 
+(defun media-progress-mpv--extract-pos-with-cache (wl-file)
+  "Extract saved position \(as number of seconds\) from WL-FILE.
+Use cached value if wl-file was not changed since last read."
+  (let* ((storage-name 'mpv-position)
+         (position-data (media-progress-cache-get storage-name wl-file))
+         (position (car position-data))
+         (mtime (cdr position-data))
+         (curr-mtime (file-attribute-modification-time (file-attributes wl-file))))
+    (if (equal mtime curr-mtime)
+        position
+      (setq position (media-progress-mpv--extract-pos wl-file))
+      (setq mtime curr-mtime)
+      (media-progress-cache-put storage-name wl-file (cons position mtime))
+      position)))
+
 (defun media-progress-mpv--get-duration (media-file)
   "Get duration of the MEDIA-FILE if mediainfo binary available."
   (when (executable-find media-progress-mpv-mediainfo-command)
@@ -134,16 +150,21 @@ If you want to check all files - set variable to nil
           `(,media-progress-mpv-mediainfo-command
             ,media-progress-mpv-mediainfo-args
             ,(shell-quote-argument media-file)) " "))) 1000.0)))
+(media-progress-cache-wrap-function #'media-progress-mpv--get-duration)
 
 (defun media-progress-mpv-info (media-file)
   "Get progress info for MEDIA-FILE if possible.
 Return (plugin-name current-pos-str duration-str progress-percentage)
-or nil if no info found."
+or nil if no info found.
+Every element of the list could be nil if source don't have
+this information for some reason. If function returned '(nil nil nil)
+then the file definitely was viewed, but no human-readable
+information about position in file or overall progress is available."
   (when-let* ((media-p (media-progress-mpv--media-p media-file))
               (wl-file (media-progress-mpv--get-watch-later-file media-file)))
-    (let* ((current-pos (media-progress-mpv--extract-pos wl-file))
+    (let* ((current-pos (media-progress-mpv--extract-pos-with-cache wl-file))
            (current-pos-str (format-seconds media-progress-mpv-watched-time-format current-pos))
-           (duration (media-progress-mpv--get-duration media-file))
+           (duration (media-progress-mpv--get-duration (substring-no-properties media-file)))
            percentage
            duration-str)
       (when duration
