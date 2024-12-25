@@ -94,8 +94,9 @@ Those plists contains hasmap with cached data.")
                  (with-demoted-errors "Error reading media-progress-cache- data: %S"
                    (car (read-from-string
                          (buffer-substring (point-min) (point-max)))))))
-            (setq media-progress-cache-data (alist-get 'data storage)
-                  media-progress-cache-history (alist-get 'history storage)))
+            (if (eq (alist-get 'version storage) media-progress-cache-version)
+                (setq media-progress-cache-data (alist-get 'data storage)
+                      media-progress-cache-history (alist-get 'history storage))))
           (kill-buffer (current-buffer))))
     nil))
 
