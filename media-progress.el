@@ -50,6 +50,7 @@
 (require 'subr-x)
 (require 'media-progress-mpv)
 (require 'media-progress-pdf-tools)
+(require 'media-progress-save-place)
 
 (declare-function nerd-icons-mdicon "ext:nerd-icons")
 
@@ -107,7 +108,8 @@ instead!"
 
 (defun media-progress-display-icons (plugin pos len progress)
   (if (not (and len progress))
-      (cond ((eq plugin 'pdf-tools) (format " %s p. %s " (nerd-icons-mdicon "nf-md-eye") pos))
+      (cond ((eq plugin 'save-place) (format " %s " (nerd-icons-mdicon "nf-md-eye")))
+            ((eq plugin 'pdf-tools) (format " %s p. %s " (nerd-icons-mdicon "nf-md-eye") pos))
             ((eq plugin 'mpv) (format " %s %s" (nerd-icons-mdicon "nf-md-eye") pos)))
     (if (> progress media-progress-completed-percentage) (format " %s " (nerd-icons-mdicon "nf-md-check"))
       (cond ((eq plugin 'pdf-tools) (format " %s p. %s/%s " (nerd-icons-mdicon "nf-md-eye") pos len))
@@ -126,12 +128,11 @@ Return an empty string if no info found."
                                 (media-progress-mpv-info media-file)))
                               ((and
                                 media-progress-pdf-tools-enabled
-                                (media-progress-pdf-tools-info media-file)))))
-            (media-plugin (car media-info))
-            (media-pos (cadr media-info))
-            (media-length (caddr media-info))
-            (media-progress (cadddr media-info)))
-      (funcall media-progress-display-function media-plugin media-pos media-length media-progress)
+                                (media-progress-pdf-tools-info media-file)))
+                              ((and
+                                media-progress-save-place-enabled
+                                (media-progress-save-place-info media-file))))))
+      (funcall media-progress-display-function (car media-info) (cadr media-info) (caddr media-info) (cadddr media-info))
     ""))
 
 (provide 'media-progress)
