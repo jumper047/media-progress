@@ -146,7 +146,8 @@ If you want to check all files - set variable to nil
                             (buffer-string)))
          (wl-lines (split-string wl-file-content "\n"))
          (wl-alist (mapcar #'media-progress--parse-wl-line wl-lines)))
-    (string-to-number (alist-get 'start wl-alist))))
+    (when (alist-get 'start wl-alist)
+        (string-to-number (alist-get 'start wl-alist)))))
 
 (defun media-progress--get-duration (media-file)
   "Get duration of the MEDIA-FILE if mediainfo binary available."
@@ -163,16 +164,16 @@ If you want to check all files - set variable to nil
 Return an empty string if no info found."
   (or (when-let* ((media-p (media-progress--media-p media-file))
                   (wl-file (media-progress--get-watch-later-file media-file)))
-
         ;; current-pos duration completed format-str subst)
-        (let  ((current-pos (media-progress--extract-pos wl-file))
-               (duration (media-progress--get-duration media-file)))
+        (let*  ((current-pos (media-progress--extract-pos wl-file))
+                (duration (when current-pos (media-progress--get-duration media-file))))
           (if duration
               (if (>= (/ (float current-pos) duration) media-progress-completed-threshold) ;completed if t
                   media-progress-completed-message
                 (format media-progress-format (round (* 100 (/ (float current-pos) duration)))))
-            (format media-progress-fallback-format
-                    (format-seconds media-progress-watched-time-format current-pos)))))
+            (when current-pos
+              (format media-progress-fallback-format
+                      (format-seconds media-progress-watched-time-format current-pos))))))
       ""))
 
 (provide 'media-progress)
