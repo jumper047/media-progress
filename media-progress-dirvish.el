@@ -85,7 +85,7 @@
 (defun media-progress-dirvish-setup ()
   "Set up media-progress info segment for DIRVISH."
   (setq media-progress-dirvish-cache (make-hash-table :test 'equal))
-  (push '(media-progress-dirvish media-progress) dirvish-libraries)
+  (push '(media-progress-dirvish media-progress) dirvish--libraries)
   (push 'media-progress dirvish-attributes))
 
 (provide 'media-progress-dirvish)
